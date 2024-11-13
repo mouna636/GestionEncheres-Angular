@@ -1,192 +1,91 @@
-<div class="container my-5">
+<div class="container-fluid">
+  <h1 class="text-center mb-5 display-4">Auction Marketplace</h1>
+
   <div class="row">
-    <!-- Example Auction Items -->
-    <div class="col-md-4">
-      <div class="card shadow-sm mb-4">
-        <img
-          src="https://via.placeholder.com/400x300"
-          class="card-img-top"
-          alt="Auction Item 1"
-        />
+    <!-- Sidebar Filters -->
+    <div class="col-md-3">
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Filters</h5>
+        </div>
         <div class="card-body">
-          <h5 class="card-title">Vintage Watch</h5>
-          <p class="card-text">Current Bid: $1,250</p>
-          <a
-            href="#"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#bidModal1"
-            >Place Bid</a
-          >
+          <!-- Status Filter -->
+          <h6 class="card-title">Auction Status</h6>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="statusAll"
+              checked
+            />
+            <label class="form-check-label" for="statusAll"> All Status </label>
+          </div>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="statusActive"
+              checked
+            />
+            <label class="form-check-label" for="statusActive"> Active </label>
+          </div>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="statusUpcoming"
+            />
+            <label class="form-check-label" for="statusUpcoming">
+              Upcoming
+            </label>
+          </div>
+
+          <!-- Category Filter -->
+          <h6 class="card-title mt-3">Category</h6>
+          <select class="form-select">
+            <option selected>All Categories</option>
+            <option>Electronics</option>
+            <option>Art</option>
+            <option>Collectibles</option>
+            <option>Vehicles</option>
+          </select>
+
+          <!-- Price Range -->
+          <h6 class="card-title mt-3">Price Range</h6>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input type="text" class="form-control" placeholder="Min" />
+            <span class="input-group-text">to</span>
+            <span class="input-group-text">$</span>
+            <input type="text" class="form-control" placeholder="Max" />
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="col-md-4">
-      <div class="card shadow-sm mb-4">
-        <img
-          src="https://via.placeholder.com/400x300"
-          class="card-img-top"
-          alt="Auction Item 2"
-        />
+      <!-- Sorting -->
+      <div class="card">
+        <div class="card-header bg-secondary text-white">
+          <h5 class="mb-0">Sort By</h5>
+        </div>
         <div class="card-body">
-          <h5 class="card-title">Antique Vase</h5>
-          <p class="card-text">Current Bid: $800</p>
-          <a
-            href="#"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#bidModal2"
-            >Place Bid</a
-          >
+          <select class="form-select">
+            <option selected>Ending Soon</option>
+            <option>Highest Bid</option>
+            <option>Lowest Bid</option>
+            <option>Newest</option>
+          </select>
         </div>
       </div>
     </div>
 
-    <div class="col-md-4">
-      <div class="card shadow-sm mb-4">
-        <img
-          src="https://via.placeholder.com/400x300"
-          class="card-img-top"
-          alt="Auction Item 3"
-        />
-        <div class="card-body">
-          <h5 class="card-title">Classic Car</h5>
-          <p class="card-text">Current Bid: $15,000</p>
-          <a
-            href="#"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#bidModal3"
-            >Place Bid</a
-          >
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bid Modals -->
-  <div
-    class="modal fade"
-    id="bidModal1"
-    tabindex="-1"
-    aria-labelledby="bidModalLabel1"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="bidModalLabel1">
-            Place Your Bid for Vintage Watch
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <input
-            type="number"
-            class="form-control"
-            placeholder="Enter bid amount"
-            min="1250"
-          />
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Close
-          </button>
-          <button type="button" class="btn btn-primary">Submit Bid</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div
-    class="modal fade"
-    id="bidModal2"
-    tabindex="-1"
-    aria-labelledby="bidModalLabel2"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="bidModalLabel2">
-            Place Your Bid for Antique Vase
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <input
-            type="number"
-            class="form-control"
-            placeholder="Enter bid amount"
-            min="800"
-          />
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Close
-          </button>
-          <button type="button" class="btn btn-primary">Submit Bid</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div
-    class="modal fade"
-    id="bidModal3"
-    tabindex="-1"
-    aria-labelledby="bidModalLabel3"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="bidModalLabel3">
-            Place Your Bid for Classic Car
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <input
-            type="number"
-            class="form-control"
-            placeholder="Enter bid amount"
-            min="15000"
-          />
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Close
-          </button>
-          <button type="button" class="btn btn-primary">Submit Bid</button>
+    <!-- Auction Cards -->
+    <div class="col-md-9">
+      <div class="row g-4">
+        <div class="row g-4">
+          <!-- Active Auction Card -->
+          <div class="col-md-4" *ngFor="let ench of encheres; let i = index">
+            <app-enchere-card [enchere]="ench" />
+          </div>
         </div>
       </div>
     </div>

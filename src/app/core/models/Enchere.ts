@@ -2,8 +2,10 @@ import { User } from './User';
 
 export interface Enchere {
   id: number;
+  title: string;
   description: string;
-  startingPrice: number;
+  startDate: Date;
+  endDate: Date;
   duration: number;
   createdAt: Date;
   status: StatusEnum;
@@ -11,6 +13,7 @@ export interface Enchere {
 }
 
 export interface StatusEnum {
+  UPCOMING: 'upcoming';
   OPEN: 'open';
   CLOSED: 'closed';
   CANCELED: 'cancelled';

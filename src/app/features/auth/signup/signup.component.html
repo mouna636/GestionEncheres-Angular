@@ -1,0 +1,176 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header text-center">
+          <h2>Sign Up</h2>
+        </div>
+
+        <div class="card-body">
+          <form (ngSubmit)="onSubmit()" #signupForm="ngForm">
+            <div class="mb-3">
+              <label for="username" class="form-label">UserName</label>
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                name="username"
+                [(ngModel)]="user.username"
+                required
+                #username="ngModel"
+              />
+              <div
+                *ngIf="username.invalid && (username.dirty || username.touched)"
+                class="text-danger"
+              >
+                Username is required
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="firstName" class="form-label">First Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="firstName"
+                name="firstName"
+                [(ngModel)]="user.firstname"
+                required
+                #firstName="ngModel"
+              />
+              <div
+                *ngIf="
+                  firstName.invalid && (firstName.dirty || firstName.touched)
+                "
+                class="text-danger"
+              >
+                First Name is required
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="lastName" class="form-label">Last Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="lastName"
+                name="lastName"
+                [(ngModel)]="user.lastname"
+                required
+                #lastName="ngModel"
+              />
+              <div
+                *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)"
+                class="text-danger"
+              >
+                Last Name is required
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                [(ngModel)]="user.email"
+                required
+                email
+                #email="ngModel"
+              />
+              <div
+                *ngIf="email.invalid && (email.dirty || email.touched)"
+                class="text-danger"
+              >
+                <div *ngIf="email.errors?.['required']">Email is required</div>
+                <div *ngIf="email.errors?.['email']">Invalid email format</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+                [(ngModel)]="user.password"
+                required
+                password
+                #password="ngModel"
+              />
+              <div
+                *ngIf="password.invalid && (password.dirty || password.touched)"
+                class="text-danger"
+              >
+                <div *ngIf="password.errors?.['required']">
+                  password is required
+                </div>
+                <div *ngIf="password.errors?.['password']">
+                  Invalid password format
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="country" class="form-label">Country</label>
+              <select
+                class="form-control"
+                id="country"
+                name="country"
+                [(ngModel)]="user.tempCountry"
+                required
+                #country="ngModel"
+              >
+                <option *ngFor="let country of countries" [ngValue]="country">
+                  {{ country.name }}
+                </option>
+              </select>
+              <div
+                *ngIf="country.invalid && (country.dirty || country.touched)"
+                class="text-danger"
+              >
+                Country is required
+              </div>
+            </div>
+
+            <!-- <div class="mb-3 form-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                id="acceptTerms"
+                name="acceptTerms"
+                [(ngModel)]="user.acceptTerms"
+                required
+                #acceptTerms="ngModel"
+              />
+              <label class="form-check-label" for="acceptTerms"
+                >Accept Terms & Conditions</label
+              >
+              <div
+                *ngIf="
+                  acceptTerms.invalid &&
+                  (acceptTerms.dirty || acceptTerms.touched)
+                "
+                class="text-danger"
+              >
+                You must accept the terms and conditions
+              </div>
+            </div> -->
+
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="signupForm.invalid"
+            >
+              Submit
+            </button>
+          </form>
+        </div>
+
+        <div class="card-footer text-center">
+          Already have an account? <a href="/login">Log in</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

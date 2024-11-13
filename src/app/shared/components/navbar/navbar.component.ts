@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-navbar',
@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   imports: [],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
+  encapsulation: ViewEncapsulation.None,
 })
 export class NavbarComponent {}

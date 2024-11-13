@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EnchereListComponent } from './enchere-list.component';
+import { EncherePageComponent } from './enchere-page.component';
 
-describe('EnchereListComponent', () => {
-  let component: EnchereListComponent;
-  let fixture: ComponentFixture<EnchereListComponent>;
+describe('EncherePageComponent', () => {
+  let component: EncherePageComponent;
+  let fixture: ComponentFixture<EncherePageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EnchereListComponent]
+      imports: [EncherePageComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(EnchereListComponent);
+    fixture = TestBed.createComponent(EncherePageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
