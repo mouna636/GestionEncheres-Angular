@@ -1,47 +1,147 @@
-<div class="card auction-card">
-  <div class="auction-image-wrapper">
-    <div class="badge-wrapper">
+<div class="bid-card border">
+  <!-- Card Header with Image -->
+  <div class="bid-card__image-wrapper">
+    <img [src]="returnImage(bid.image)" [alt]="bid.title" />
+    <div class="bid-card__overlay">
+      <span class="bid-card__category">Product Category</span>
       <span
-        class="status-badge"
-        [ngClass]="{
-          'bg-success': enchere.status.toString() === 'open',
-          'bg-danger': enchere.status.toString() !== 'open'
-        }"
+        class="bid-card__status"
+        [class.status--running]="bid.status === 'running'"
+        [class.status--open]="bid.status === 'open'"
+        [class.status--closed]="bid.status === 'closed'"
+        [class.status--cancelled]="bid.status === 'cancelled'"
+        [class.status--upcoming]="bid.status === 'upcoming'"
+        [class.status--ended]="bid.status === 'ended'"
+        [class.status--sold]="bid.status === 'sold'"
+        [class.status--draft]="bid.status === 'draft'"
+        [class.status--scheduled]="bid.status === 'scheduled'"
+        [class.status--paused]="bid.status === 'paused'"
       >
-        {{ enchere.status }}
+        {{ bid.status | titlecase }}
       </span>
     </div>
-    <img
-      src="https://via.placeholder.com/300x250"
-      class="auction-image"
-      alt="Auction Item"
-    />
-  </div>
-
-  <div class="card-body">
-    <h5 class="card-title">
-      {{ enchere.title }}
-    </h5>
-    <p class="card-text">
-      {{ enchere.description }}
-    </p>
-  </div>
-
-  <div class="bid-section">
-    <div class="bid-info">
-      <span class="bid-label">Current Bid</span>
-      <span class="bid-amount">$1,250</span>
+    <div class="bid-card__timer" *ngIf="bid.status === 'running'">
+      <i class="bi bi-clock me-2"></i>
+      <span [class.ending-soon]="isEndingSoon(bid)">
+        {{ bid.endDate | date : "shortDate" }}
+      </span>
     </div>
-    <button class="btn btn-bid btn-sm">Place Bid</button>
   </div>
 
-  <div class="card-footer d-flex justify-content-between align-items-center">
-    <span class="seller-info"
-      >By {{ enchere.createdBy.firstname }}
-      {{ enchere.createdBy.lastname }}</span
+  <!-- Card Content -->
+  <div class="bid-card__content">
+    <h3 class="bid-card__title">{{ bid.title }}</h3>
+
+    <!-- Price Section -->
+    <div
+      class="bid-card__price-section"
+      *ngIf="bid.status === 'running' || bid.status === 'open'"
     >
-    <span class="time-badge">
-      Starts in {{ dateDiff().days + " days and " + dateDiff().hours + " hrs" }}
-    </span>
+      <div class="current-price">
+        <span class="label">Current Bid</span>
+        <span class="amount"
+          >${{ bid.currentHighestPrice | number : "1.0-0" }}</span
+        >
+      </div>
+      <div class="bid-info">
+        <div class="total-bids">
+          <span class="number">{{ bid.totalBids }}</span>
+          <span class="label">Total des offres</span>
+        </div>
+        <div class="time-left" *ngIf="bid.status === 'running'">
+          <span class="number">{{ getRemainingTimeToStart() }}</span>
+          <span class="label">Left</span>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="bid-card__progress"
+      *ngIf="bid.status === 'running' || bid.status === 'open'"
+    >
+      <div class="progress-info">
+        <!-- <span>Starting: ${{ bid.startPrice }}</span>
+        <span class="progress-percentage">
+          {{
+            ((bid.currentPrice - bid.startPrice) / bid.startPrice) * 100
+              | number : "1.0-0"
+          }}% increase
+        </span>     -->
+        <span>Starting: $100</span>
+        <span class="progress-percentage"> 50% increase </span>
+      </div>
+
+      <div class="progress">
+        <div
+          class="progress-bar"
+          [style.width]="getProgressWidth(bid) + '%'"
+          [class.ending-soon]="isEndingSoon(bid)"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Seller Info -->
+    <div class="bid-card__seller">
+      <div class="seller-avatar">
+        <i class="bi bi-person-circle"></i>
+      </div>
+      <div class="seller-info">
+        <span class="seller-name">{{
+          bid.seller.firstname + " " + bid.seller.lastname
+        }}</span>
+        <div class="seller-rating">
+          <div class="stars">
+            <i
+              class="bi bi-star-fill"
+              *ngFor="let star of [].constructor(5); let i = index"
+              [class.active]="i < 5"
+            >
+            </i>
+          </div>
+          <span class="rating-number">{{ 5 }}/5</span>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="mt-4 d-flex flex-column align-items-start"
+      *ngIf="bid.status !== 'running'"
+    >
+      <span class="badge bg-warning">
+        {{ bid.startDate | date : "shortDate" }}
+      </span>
+      <span
+        class="badge bg-info mt-2"
+        [ngClass]="{ 'bg-danger': getRemainingTimeToStart() == 'Started' }"
+      >
+        <!-- {{ startsIn(bid).days + " days and " + startsIn(bid).hours + " hrs" }} -->
+        {{ getRemainingTimeToStart() }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="bid-card__actions">
+    <button
+      class="btn-bid"
+      *ngIf="bid.status === 'running'"
+      (click)="placeBid(bid)"
+    >
+      Place Bid
+      <i class="bi bi-arrow-right"></i>
+    </button>
+    <div class="secondary-actions">
+      <button class="btn-icon" title="Favorite">
+        <i class="bi" [class.bi-heart]="true" [class.bi-heart-fill]="false"></i>
+      </button>
+      <a
+        type="button"
+        [routerLink]="bid.id.toString()"
+        class="btn-icon btn-details"
+        title="Details"
+      >
+        <i class="bi bi-info-circle"></i>
+      </a>
+    </div>
   </div>
 </div>

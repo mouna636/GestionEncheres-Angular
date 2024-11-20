@@ -14,4 +14,7 @@ export interface User {
   countryid?: string;
   role?: Role;
   encheres?: Enchere[];
+  rating?: number;
+
+  createdAt?: Date;
 }

@@ -26,4 +26,25 @@ export class EnchereService {
       withCredentials: true,
     });
   }
+
+  subscribe(userId: number, enchereId: number): Observable<any> {
+    return this.http.post(
+      `${API_URL}/subscribers/subscribe/${userId}/${enchereId}`,
+      {},
+      { withCredentials: true }
+    );
+  }
+
+  getSubscribersForEnchere(enchereId: number): Observable<any> {
+    return this.http.get(`${API_URL}/subscribers/enchere/${enchereId}`, {
+      withCredentials: true,
+    });
+  }
+
+  checkIfSubscribed(username: string, enchereId: number): Observable<any> {
+    return this.http.get(
+      `${API_URL}/subscribers/check/${username}/${enchereId}`,
+      { withCredentials: true }
+    );
+  }
 }
