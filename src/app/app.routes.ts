@@ -7,9 +7,14 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { enchereRoutes } from './features/encheres/enchere.routes';
 import { EnchereFormComponent } from './features/encheres/enchere-form/enchere-form.component';
 import { EnchereRoomComponent } from './features/encheres/enchere-room/enchere-room.component';
+import { FormCategoryComponent } from './features/categories/form-category/form-category.component';
+import { ListCategoryComponent } from './features/categories/list-category/list-category.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'Categoryform', component: FormCategoryComponent },
+  { path: 'list-categorie', component: ListCategoryComponent },
+
   {
     path: 'room/enchere/:id',
     component: EnchereRoomComponent,
