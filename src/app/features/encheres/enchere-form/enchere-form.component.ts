@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { EnchereService } from '../../../core/services/enchere.service';
 import { Enchere } from '../../../core/models/Enchere';
 import { TitleCasePipe, CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-enchere-form',
@@ -21,27 +21,27 @@ export class EnchereFormComponent implements OnInit {
   enchereForm: FormGroup;
   statusOptions = [
     'upcoming',
-    'open',
-    'closed',
     'cancelled',
     'sold',
-    'draft',
-    'scheduled',
     'running',
     'paused',
     'ended',
   ];
+
+  products: any[] = [];
   selectedFile: File | null = null;
   enchere!: Enchere;
   constructor(
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private enchereService: EnchereService
+    private enchereService: EnchereService,
+    private http: HttpClient
   ) {
     this.enchereForm = this.fb.group({
       id: [{ value: null, disabled: true }], // ID field is disabled
       title: ['', Validators.required],
       description: [''],
+      product: [null, Validators.required],
       startDate: ['', Validators.required],
       duration: ['', Validators.required],
       status: ['upcoming', Validators.required],
@@ -56,6 +56,7 @@ export class EnchereFormComponent implements OnInit {
   }
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.params['id'];
+    this.fetchProducts();
     if (id) {
       this.enchereService.getEnchere(id).subscribe((enchere) => {
         this.enchere = enchere;
@@ -64,10 +65,24 @@ export class EnchereFormComponent implements OnInit {
     }
   }
 
+  fetchProducts() {
+    this.http.get('http://localhost:3000/products').subscribe({
+      next: (res) => {
+        console.log('Products:', res);
+
+        this.products = res as any[];
+      },
+      error: (error) => {
+        console.error('Error fetching products:', error);
+      },
+    });
+  }
+
   populateForm() {
     this.enchereForm.patchValue({
       title: this.enchere.title,
       description: this.enchere.description,
+      productId: this.enchere.product,
       startDate: this.enchere.startDate,
       duration: this.enchere.duration,
       status: this.enchere.status,
@@ -77,15 +92,26 @@ export class EnchereFormComponent implements OnInit {
 
   onSubmit() {
     if (this.enchereForm.valid) {
+      console.log('Form data:', this.enchereForm.value);
+
       const formData = new FormData();
       console.log('Form data:', this.enchereForm.value);
 
       Object.keys(this.enchereForm.controls).forEach((key) => {
-        formData.append(key, this.enchereForm.get(key)?.value);
+        if (key === 'product') {
+          const prod = JSON.stringify(this.enchereForm.get(key)?.value);
+          formData.append(key, prod);
+        } else {
+          const controlValue = this.enchereForm.get(key)?.value;
+          formData.append(key, controlValue);
+        }
       });
+
       if (this.selectedFile) {
         formData.append('image', this.selectedFile);
       }
+
+      // Log the form data to verify its content
       formData.forEach((value, key) => {
         console.log(`${key}: ${value}`);
       });

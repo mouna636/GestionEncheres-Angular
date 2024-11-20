@@ -3,18 +3,14 @@
   <div class="bid-card__image-wrapper">
     <img [src]="returnImage(bid.image)" [alt]="bid.title" />
     <div class="bid-card__overlay">
-      <span class="bid-card__category">Product Category</span>
+      <span class="bid-card__category">{{ bid.product.category.name }}</span>
       <span
         class="bid-card__status"
         [class.status--running]="bid.status === 'running'"
-        [class.status--open]="bid.status === 'open'"
-        [class.status--closed]="bid.status === 'closed'"
         [class.status--cancelled]="bid.status === 'cancelled'"
         [class.status--upcoming]="bid.status === 'upcoming'"
         [class.status--ended]="bid.status === 'ended'"
         [class.status--sold]="bid.status === 'sold'"
-        [class.status--draft]="bid.status === 'draft'"
-        [class.status--scheduled]="bid.status === 'scheduled'"
         [class.status--paused]="bid.status === 'paused'"
       >
         {{ bid.status | titlecase }}

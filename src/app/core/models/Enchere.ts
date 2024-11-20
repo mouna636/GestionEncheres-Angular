@@ -15,6 +15,7 @@ export interface Enchere {
   currentHighestPrice: number;
   viewCount: number;
   rating: number;
+  product: any;
 }
 
 export enum StatusEnum {

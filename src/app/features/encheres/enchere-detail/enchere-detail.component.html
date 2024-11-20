@@ -2,7 +2,6 @@
   <ng-container *ngIf="(isLoading$ | async) === false">
     <div *ngIf="error$ | async as error" class="alert alert-danger">
       {{ error }}
-      <p>AAAA</p>
     </div>
 
     <ng-container *ngIf="enchere$ | async as enchere">
@@ -74,7 +73,7 @@
                 <!-- Product Quick Info -->
                 <div class="product-quick-info mb-4">
                   <h6 class="text-muted">
-                    {{ product.brand }} {{ product.model }}
+                    {{ enchere.product.name }}
                   </h6>
                   <div class="d-flex gap-3">
                     <span class="badge bg-secondary">{{
@@ -260,19 +259,31 @@
                           />
                         </div>
                         <div>
-                          <h5 class="mb-1">{{ enchere.seller?.username }}</h5>
+                          <h5 class="mb-1">{{ enchere.seller.username }}</h5>
                           <div class="d-flex align-items-center gap-2">
                             <div class="rating">
-                              <i class="bi bi-star-fill text-warning"></i>
-                              <span class="ms-1">{{
-                                enchere.seller?.rating
-                              }}</span>
+                              <div class="stars">
+                                <i
+                                  class="bi bi-star-fill text-warning"
+                                  *ngFor="
+                                    let star of [].constructor(5);
+                                    let i = index
+                                  "
+                                  [class.active]="
+                                    i < (enchere?.seller?.rating || 0)
+                                  "
+                                ></i>
+                                <!-- <i class="bi bi-star-fill text-warning"></i> -->
+                                <span class="ms-1">{{
+                                  enchere.seller.rating
+                                }}</span>
+                              </div>
                             </div>
                             <span class="text-muted">·</span>
                             <span class="text-muted"
                               >Member since
                               {{
-                                enchere.seller?.createdAt | date : "MMM yyyy"
+                                enchere.seller.createdAt | date : "MMM yyyy"
                               }}</span
                             >
                           </div>
@@ -301,51 +312,6 @@
                       </div>
                     </div>
                   </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="action-section">
-                  <ng-container [ngSwitch]="enchere.status">
-                    <button
-                      *ngSwitchCase="StatusEnum.UPCOMING"
-                      class="btn btn-primary btn-lg w-100"
-                      #subscribeButton
-                      (click)="onSubscribe()"
-                    >
-                      <i class="bi bi-bell me-2"></i>
-                      Subscribe
-                    </button>
-
-                    <button
-                      *ngSwitchCase="StatusEnum.RUNNING"
-                      [disabled]="!isSubscribed$.value"
-                      class="btn btn-primary btn-lg w-100"
-                      [ngClass]="{ 'btn-warning': !isSubscribed$.value }"
-                      (click)="enterAuctionRoom()"
-                    >
-                      {{
-                        isSubscribed$.value ? "Enter the room" : "Started..."
-                      }}
-                    </button>
-
-                    <!-- <div *ngSwitchCase="StatusEnum.RUNNING" class="bid-controls">
-                      <button
-                        class="btn btn-primary btn-lg w-100"
-                        (click)="enterBid()"
-                      >
-                        <i class="bi bi-currency-dollar me-2"></i>
-                        Place Bid
-                      </button>
-                    </div> -->
-
-                    <button
-                      *ngSwitchDefault
-                      class="btn btn-secondary btn-lg w-100"
-                      disabled
-                    >
-                      {{ enchere.status | titlecase }}
-                    </button>
-                  </ng-container>
                 </div>
               </div>
             </div>
