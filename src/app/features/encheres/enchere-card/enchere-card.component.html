@@ -1,0 +1,47 @@
+<div class="card auction-card">
+  <div class="auction-image-wrapper">
+    <div class="badge-wrapper">
+      <span
+        class="status-badge"
+        [ngClass]="{
+          'bg-success': enchere.status.toString() === 'open',
+          'bg-danger': enchere.status.toString() !== 'open'
+        }"
+      >
+        {{ enchere.status }}
+      </span>
+    </div>
+    <img
+      src="https://via.placeholder.com/300x250"
+      class="auction-image"
+      alt="Auction Item"
+    />
+  </div>
+
+  <div class="card-body">
+    <h5 class="card-title">
+      {{ enchere.title }}
+    </h5>
+    <p class="card-text">
+      {{ enchere.description }}
+    </p>
+  </div>
+
+  <div class="bid-section">
+    <div class="bid-info">
+      <span class="bid-label">Current Bid</span>
+      <span class="bid-amount">$1,250</span>
+    </div>
+    <button class="btn btn-bid btn-sm">Place Bid</button>
+  </div>
+
+  <div class="card-footer d-flex justify-content-between align-items-center">
+    <span class="seller-info"
+      >By {{ enchere.createdBy.firstname }}
+      {{ enchere.createdBy.lastname }}</span
+    >
+    <span class="time-badge">
+      Starts in {{ dateDiff().days + " days and " + dateDiff().hours + " hrs" }}
+    </span>
+  </div>
+</div>

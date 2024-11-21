@@ -1,0 +1,93 @@
+<div class="container-fluid">
+  <h1 class="text-center mb-5 display-4">Auction Marketplace</h1>
+
+  <div class="row">
+    <!-- Sidebar Filters -->
+    <div class="col-md-3">
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Filters</h5>
+        </div>
+        <div class="card-body">
+          <!-- Status Filter -->
+          <h6 class="card-title">Auction Status</h6>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="statusAll"
+              checked
+            />
+            <label class="form-check-label" for="statusAll"> All Status </label>
+          </div>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="statusActive"
+              checked
+            />
+            <label class="form-check-label" for="statusActive"> Active </label>
+          </div>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="statusUpcoming"
+            />
+            <label class="form-check-label" for="statusUpcoming">
+              Upcoming
+            </label>
+          </div>
+
+          <!-- Category Filter -->
+          <h6 class="card-title mt-3">Category</h6>
+          <select class="form-select">
+            <option selected>All Categories</option>
+            <option>Electronics</option>
+            <option>Art</option>
+            <option>Collectibles</option>
+            <option>Vehicles</option>
+          </select>
+
+          <!-- Price Range -->
+          <h6 class="card-title mt-3">Price Range</h6>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input type="text" class="form-control" placeholder="Min" />
+            <span class="input-group-text">to</span>
+            <span class="input-group-text">$</span>
+            <input type="text" class="form-control" placeholder="Max" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Sorting -->
+      <div class="card">
+        <div class="card-header bg-secondary text-white">
+          <h5 class="mb-0">Sort By</h5>
+        </div>
+        <div class="card-body">
+          <select class="form-select">
+            <option selected>Ending Soon</option>
+            <option>Highest Bid</option>
+            <option>Lowest Bid</option>
+            <option>Newest</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auction Cards -->
+    <div class="col-md-9">
+      <div class="row g-4">
+        <div class="row g-4">
+          <!-- Active Auction Card -->
+          <div class="col-md-4" *ngFor="let ench of encheres; let i = index">
+            <app-enchere-card [enchere]="ench" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
