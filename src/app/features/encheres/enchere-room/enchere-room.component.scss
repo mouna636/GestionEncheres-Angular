@@ -1,0 +1,36 @@
+.badgex {
+  width: 1.3rem;
+  height: 1.3rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent; /* Make the badge background transparent */
+  border: none; /* Remove unnecessary borders */
+}
+
+.online-dot {
+  width: 0.9rem;
+  height: 0.9rem;
+  background-color: #f80a0a; /* Green color for online status */
+  border: 2px solid white; /* Creates a border to enhance visibility */
+  border-radius: 50%;
+  animation: pulse-dot 1.5s infinite ease-in-out;
+}
+
+.current-user {
+  font-weight: bold;
+  background-color: rgba(0, 128, 0, 0.1);
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}

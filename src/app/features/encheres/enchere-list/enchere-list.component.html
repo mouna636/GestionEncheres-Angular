@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="container-fluid">
   <h1 class="text-center mb-5 display-4">Auction Marketplace</h1>
 
@@ -91,3 +92,78 @@
     </div>
   </div>
 </div>
+=======
+<app-enchere-page>
+  <div class="container-fluid mt-4 enchere-list">
+    <!-- Header Section -->
+    <div class="row mb-4">
+      <div class="col">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="mb-0">Active Auctions</h2>
+          <a type="button" class="btn btn-success" routerLink="create">
+            <i class="bi bi-plus-lg"></i> New Auction
+          </a>
+        </div>
+
+        <div
+          class="d-flex flex-wrap gap-3 justify-content-between align-items-center"
+        >
+          <!-- Filters -->
+          <div class="btn-group">
+            <button
+              *ngFor="let filter of filters"
+              class="btn"
+              [class.btn-primary]="currentFilter === filter"
+              [class.btn-outline-primary]="currentFilter !== filter"
+              (click)="filterBids(filter)"
+            >
+              {{ filter | titlecase }}
+              <span class="badge bg-light text-dark ms-2">{{
+                getBidCount(filter)
+              }}</span>
+            </button>
+          </div>
+
+          <!-- Search and View Toggle -->
+          <div class="d-flex gap-2">
+            <div class="input-group search-bar">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Search auctions..."
+                [(ngModel)]="searchTerm"
+                (input)="onSearch()"
+              />
+              <span class="input-group-text">
+                <i class="bi bi-search"></i>
+              </span>
+            </div>
+            <button
+              class="btn btn-outline-secondary view-toggle"
+              (click)="toggleView()"
+            >
+              <i
+                class="bi"
+                [ngClass]="view === 'grid' ? 'bi-list' : 'bi-grid'"
+              ></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <ng-container
+        *ngIf="filteredEncheres?.length && filteredEncheres.length > 0"
+      >
+        <div
+          *ngFor="let bid of filteredEncheres"
+          class="col-12 col-md-6 col-lg-4 col-xl-3"
+        >
+          <app-enchere-card [bid]="bid"></app-enchere-card>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</app-enchere-page>
+>>>>>>> 7040cb29d832349db0d7336f22872348a1b1bdae

@@ -39,6 +39,7 @@ export class SignupComponent {
       delete user.tempCountry;
       console.log('user', user);
 
+<<<<<<< HEAD
       // this.authService.register(user).subscribe({
       //   next: (res) => {
       //     console.log('res', res);
@@ -47,6 +48,16 @@ export class SignupComponent {
       //     console.log('err', err);
       //   },
       // });
+=======
+      this.authService.register(user).subscribe({
+        next: (res) => {
+          console.log('res', res);
+        },
+        error: (err) => {
+          console.log('err', err);
+        },
+      });
+>>>>>>> 7040cb29d832349db0d7336f22872348a1b1bdae
     }
   }
 
