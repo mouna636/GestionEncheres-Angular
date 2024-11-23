@@ -1,5 +1,24 @@
+
+
+
+<body id="page-top">
+  <div id="wrapper">
+ <app-side-bar></app-side-bar>
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        <!-- TopBar -->
+        <app-top-bar></app-top-bar>
+      
+        <div class="container-fluid" id="container-wrapper">
+          <div class="container my-5" style="margin-top: 2px;">
+            <div class="row justify-content-center">
+                <div class="col-md-10 col-lg-10">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                          <h2 class="text-center mb-4">List Product</h2>
+
+
 <div class="container mt-4">
-    <h3 class="text-center">Liste des Produits</h3>
     <table class="table table-bordered table-hover mt-3">
       <thead class="thead-light">
         <tr>
@@ -9,6 +28,7 @@
           <th>Catégorie</th>
           <th>Prix</th>
           <th>Image</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -22,10 +42,16 @@
             <td>
                 <img *ngIf="product.imageUrl" [src]="product.imageUrl" alt="Image Produit" style="width: 100px; height: auto;" />
               </td>
-              
+              <td style="align-items: center;">
+                <img 
+              src="assets/edit.png" 
+              style="margin-right: 10px; cursor: pointer;" 
+             >
+              <img src="assets/delete.png" style="cursor: pointer;" >
+          </td> 
           
         </tr>
       </tbody>
     </table>
   </div>
-  
+                        </div></div></div></div></div></div></div></div></div></body>

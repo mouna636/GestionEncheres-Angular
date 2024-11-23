@@ -1,18 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-<<<<<<< HEAD
 import { ProductService } from '../../features/products/product.service';
 import { CategoriesService } from '../../features/categories/categories.service';
-=======
->>>>>>> 7040cb29d832349db0d7336f22872348a1b1bdae
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './home.component.html',
-<<<<<<< HEAD
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
@@ -55,10 +51,4 @@ export class HomeComponent {
     }
     return this.products.filter(product => product.category === this.activeCategory);
   }
-=======
-  styleUrl: './home.component.scss'
-})
-export class HomeComponent {
-
->>>>>>> 7040cb29d832349db0d7336f22872348a1b1bdae
 }

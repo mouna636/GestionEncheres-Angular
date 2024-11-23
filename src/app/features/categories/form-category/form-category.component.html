@@ -1,21 +1,43 @@
-<div class="container">
-    <h2>Ajouter une catégorie</h2>
-    <form [formGroup]="categoryForm" (ngSubmit)="addCategory()">
-      <div class="form-group">
-        <label for="name">Nom de la catégorie</label>
-        <input
-          id="name"
-          class="form-control"
-          formControlName="name"
-          placeholder="Entrez le nom de la catégorie"
-        />
-        <div *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
-          <small class="text-danger">Le nom est requis.</small>
+<body id="page-top">
+  <div id="wrapper">
+    <app-side-bar></app-side-bar>
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        <app-top-bar></app-top-bar>
+        <div class="container-fluid" id="container-wrapper">
+          <div class="container my-5" style="margin-top: 2px;">
+            <div class="row justify-content-center">
+              <div class="col-md-10 col-lg-10">
+                <div class="card shadow-sm">
+                  <div class="card-body">
+                    <h2 class="text-center mb-4">Add Category</h2>
+                    <div class="container">
+                  
+                      <form [formGroup]="categoryForm" (ngSubmit)="addCategory()">
+                        <div class="form-group">
+                          
+                          <input
+                            id="name"
+                            class="form-control"
+                            formControlName="name"
+                            placeholder="Entrez le nom de la catégorie"
+                          />
+                          <div *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
+                            <small class="text-danger">Le nom est requis.</small>
+                          </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" [disabled]="categoryForm.invalid">
+                          Ajouter
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary" [disabled]="categoryForm.invalid">
-        Ajouter
-      </button>
-    </form>
+    </div>
   </div>
-  
+</body>

@@ -14,10 +14,4 @@ export interface User {
   countryid?: string;
   role?: Role;
   encheres?: Enchere[];
-<<<<<<< HEAD
-=======
-  rating?: number;
-
-  createdAt?: Date;
->>>>>>> 7040cb29d832349db0d7336f22872348a1b1bdae
 }

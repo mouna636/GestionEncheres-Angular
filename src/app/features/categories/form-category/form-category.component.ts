@@ -3,10 +3,12 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CategoriesService } from '../categories.service';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
+import { SideBarComponent } from '../../../shared/components/side-bar/side-bar.component';
+import { TopBarComponent } from '../../../shared/components/top-bar/top-bar.component';
 
 @Component({
   standalone: true,
-  imports: [ReactiveFormsModule,NgIf], 
+  imports: [ReactiveFormsModule,NgIf,SideBarComponent,TopBarComponent], 
   selector: 'app-form-category',
   templateUrl: './form-category.component.html',
   styleUrls: ['./form-category.component.scss'],

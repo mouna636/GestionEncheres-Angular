@@ -26,11 +26,6 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "src/assets/vendor/bootstrap/css/bootstrap.min.css",
-<<<<<<< HEAD
-=======
-              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
-              "node_modules/ngx-toastr/toastr.css",
->>>>>>> 7040cb29d832349db0d7336f22872348a1b1bdae
               "src/styles.scss"
             ],
             "scripts": ["src/assets/vendor/bootstrap/js/bootstrap.min.js"],

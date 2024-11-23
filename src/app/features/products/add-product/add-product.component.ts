@@ -5,12 +5,14 @@ import { ProductService } from '../product.service';
 import { CategoriesService } from '../../categories/categories.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { SideBarComponent } from '../../../shared/components/side-bar/side-bar.component';
+import { TopBarComponent } from '../../../shared/components/top-bar/top-bar.component';
 
 
 
 @Component({
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule], 
+  imports: [ReactiveFormsModule,CommonModule,SideBarComponent,TopBarComponent], 
   selector: 'app-add-product',
   templateUrl: './add-product.component.html',
   styleUrls: ['./add-product.component.scss']
