@@ -76,7 +76,6 @@ export class EnchereRoomComponent {
   async ngOnInit() {
     const enchId = this.route.snapshot.params['id'];
 
-
     if (enchId) {
       this.fetchEnchere(enchId);
     } else {
@@ -89,8 +88,6 @@ export class EnchereRoomComponent {
 
     if (typeof window !== 'undefined')
       window.addEventListener('beforeunload', this.onWindowUnload.bind(this));
-
-
   }
 
   fetchEnchere(id: string) {
@@ -221,14 +218,12 @@ export class EnchereRoomComponent {
 
   //-----------------offer-------------------
   crateOffer() {
-  
     this.authService.getCurrentUserObservable().subscribe({
       next: (user) => {
         const offer = {
-          amount: this.currentBid,
+          amount: this.bidAmount,
           enchereId: this.enchere.id,
           userName: user.username,
-          
         };
         console.log('Offer:', offer);
 
@@ -238,39 +233,34 @@ export class EnchereRoomComponent {
             this.toastr.success('Offer created successfully');
 
             //envoyer l'offre au serveur (back-end) de websocket
-            this.auctionSocketService.emitNewOffer(this.enchere.id, response, user);
-            
+            this.auctionSocketService.emitNewOffer(
+              this.enchere.id.toString(),
+              user,
+              response
+            );
           },
 
-
-          error: (error : any) => {
+          error: (error: any) => {
             console.error('Error creating offer:', error);
             this.toastr.error('Error creating offer');
           },
-
-
         });
-       
       },
       error: (error) => {
         console.error('Error fetching current user:', error);
       },
     });
-    
   }
 
   fetchOffers() {
-    this.offerService.getOffers().subscribe({
+    this.auctionSocketService.getOffers().subscribe({
       next: (offers: any[]) => {
         console.log('Offers:', offers);
         this.offers = offers;
       },
-      error: (error : any) => {
+      error: (error: any) => {
         console.error('Error fetching offers:', error);
       },
     });
   }
-
-
-
 }

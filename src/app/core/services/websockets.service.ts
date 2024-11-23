@@ -1,9 +1,27 @@
 import { isPlatformBrowser } from '@angular/common';
 import { inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { AuthService } from './auth.service';
+
+interface User {
+  username: string;
+  role: { id: number; name: string };
+}
+
+interface Offer {
+  amount: number;
+  timestamp: Date;
+  user: User;
+}
+
+interface OfferUpdate {
+  auctionId: string;
+  newOffer: Offer;
+  allOffers: Offer[];
+  highestBid: Offer;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -11,12 +29,12 @@ import { AuthService } from './auth.service';
 export class WebSocketService {
   private socket: Socket | null = null;
   private activeUsers = new BehaviorSubject<User[]>([]);
-  private offersTab = new BehaviorSubject<any[]>([]);
+  private offers = new BehaviorSubject<Offer[]>([]);
+  private highestBid = new BehaviorSubject<Offer | null>(null);
   private connectionStatus = new BehaviorSubject<boolean>(false);
   private platformId = inject(PLATFORM_ID);
   private reconnectAttempts = 0;
   private readonly MAX_RECONNECT_ATTEMPTS = 5;
-
 
   constructor(
     private ngZone: NgZone,
@@ -24,14 +42,14 @@ export class WebSocketService {
     private authS: AuthService
   ) {
     authS.getCurrentUserObservable().subscribe((user) => {
-      this.initializeSocket(user);
+      if (user) {
+        this.initializeSocket(user);
+      }
     });
-    // this.initializeSocket();
   }
 
   private initializeSocket(user: any) {
-    console.log('Initializing WebSocket connection...');
-    console.log(user);
+    console.log('Initializing WebSocket connection...', user);
 
     this.ngZone.runOutsideAngular(() => {
       this.socket = io('http://localhost:3000/auction', {
@@ -43,20 +61,9 @@ export class WebSocketService {
         timeout: 10000,
         withCredentials: true,
       });
-      this.socket.on('connect', () => {
-        console.log('Connected to backend');
-      });
 
-      this.socket.on('connectionEstablished', (data) => {
-        console.log('Connection established:', data);
-      });
-
-      this.socket.on('connect_error', (err) => {
-        console.error('Connection error:', err);
-      });
       this.setupConnectionListeners();
       this.setupEventListeners(user);
-      // this.startHeartbeat();
     });
   }
 
@@ -83,28 +90,27 @@ export class WebSocketService {
         }
       });
     });
-
-    this.socket.on('connectionEstablished', (data) => {
-      console.log('Connection established:', data);
-    });
   }
 
-  private setupEventListeners(user: any) {
+  private setupEventListeners(user: User) {
     if (!this.socket) return;
 
     this.socket.on(
       'userJoined',
-      (data: { user: User; activeUsers: any; message: string }) => {
-        console.log('USER JOINED', data);
-
+      (data: {
+        user: User;
+        activeUsers: User[];
+        currentOffers: Offer[];
+        message: string;
+      }) => {
         this.ngZone.run(() => {
-          console.log(data.message);
-          console.log('USER JOINED', data);
-
+          console.log('User joined:', data);
           this.activeUsers.next(data.activeUsers);
-          if (data.user.username === user.username) return;
+          this.offers.next(data.currentOffers);
 
-          this.toastr.success(data.message, 'User Joined');
+          if (data.user.username !== user.username) {
+            this.toastr.success(data.message, 'User Joined');
+          }
         });
       }
     );
@@ -113,31 +119,34 @@ export class WebSocketService {
       'userLeft',
       (data: { user: User; activeUsers: User[]; message: string }) => {
         this.ngZone.run(() => {
-          console.log(data.message);
+          console.log('User left:', data);
           this.activeUsers.next(data.activeUsers);
-          const user = this.activeUsers.value.find(
-            (u) => u.username === data.user.username
-          );
-          if (!user) return;
           this.toastr.info(data.message, 'User Left');
         });
       }
     );
 
-      //Ecouter à partir de service back-end cette évenement (Notifier les autres participants)
-    this.socket.on('offerUpdate', (data: any) => {
-      console.log('OFFER UPDATE', data);
-
+    this.socket.on('offerUpdate', (data: OfferUpdate) => {
       this.ngZone.run(() => {
-        this.offersTab.next(data.offers);
-      });
-    })
+        console.log('Offer update received:', data);
+        this.offers.next(data.allOffers);
+        this.highestBid.next(data.highestBid);
 
-    this.socket.on('error', (error) => {
-      console.error('WebSocket error:', error);
+        if (data.newOffer.user.username !== user.username) {
+          this.toastr.info(
+            `New bid: $${data.newOffer.amount}`,
+            `Bid by ${data.newOffer.user.username}`
+          );
+        }
+      });
     });
 
-
+    this.socket.on('error', (error: { error: string }) => {
+      this.ngZone.run(() => {
+        console.error('WebSocket error:', error);
+        this.toastr.error(error.error, 'Error');
+      });
+    });
   }
 
   joinRoom(auctionId: string, user: User) {
@@ -153,43 +162,64 @@ export class WebSocketService {
     }
   }
 
-  //---------offer--------------------
+  emitNewOffer(auctionId: string, user: User, amount: number) {
+    console.log('Emitting new offer:', { auctionId, user, amount });
 
-  //Notifier le serveur que un nouvel offre a été crée (émis)
-  public emitNewOffer = (auctionId: number, user: any,  offer: any) => {
-    console.log('Emitting new offer:', auctionId, offer);
-    this.socket?.emit('NewOffer', { auctionId, offer, user }, (response: any) => {
-      if (response?.status === 'success') {
-        console.log('Successfully emitted new offer:', response);
+    this.socket?.emit(
+      'NewOffer',
+      {
+        auctionId,
+        user,
+        offer: { amount },
+      },
+      (response: any) => {
+        if (response?.status === 'success') {
+          console.log('Offer placed successfully:', response);
+          this.toastr.success('Your bid has been placed', 'Success');
+        } else if (response?.status === 'error') {
+          console.error('Error placing offer:', response);
+          this.toastr.error(response.message, 'Error');
+        }
       }
-    });
-
-    //
-
+    );
   }
 
-  //Liste des offres
-  public getOffers(): Observable<any[]> {
-    return this.offersTab.asObservable();
+  getOffers(): Observable<Offer[]> {
+    return this.offers.asObservable();
+  }
+
+  getHighestBid(): Observable<Offer | null> {
+    return this.highestBid.asObservable();
   }
 
   private emitJoinRoom(auctionId: string, user: User) {
-    console.log('Emitting to join room:', auctionId, user);
+    console.log('Joining room:', { auctionId, user });
 
     this.socket?.emit('joinRoom', { auctionId, user }, (response: any) => {
       if (response?.status === 'success') {
-        console.log('Successfully emiited to join room:', response);
+        console.log('Successfully joined room:', response);
+        // Initialize offers with current state
+        if (response.currentOffers) {
+          this.offers.next(response.currentOffers);
+        }
+      } else {
+        console.error('Failed to join room:', response);
+        this.toastr.error(
+          response.message || 'Failed to join auction',
+          'Error'
+        );
       }
     });
   }
 
   leaveRoom(auctionId: string, username: string) {
     this.socket?.emit('leaveRoom', { auctionId, username });
+    // Clear local state
+    this.offers.next([]);
+    this.highestBid.next(null);
   }
 
-  getActiveUsers(): Observable<User[]> {
-    console.log('Getting active users', this.activeUsers);
-
+  getActiveUsers(): Observable<any[]> {
     return this.activeUsers.asObservable();
   }
 
@@ -202,11 +232,9 @@ export class WebSocketService {
       this.socket.disconnect();
       this.socket = null;
       this.connectionStatus.next(false);
+      this.offers.next([]);
+      this.highestBid.next(null);
+      this.activeUsers.next([]);
     }
   }
 }
-interface User {
-  username: string;
-  role: string;
-}
-
