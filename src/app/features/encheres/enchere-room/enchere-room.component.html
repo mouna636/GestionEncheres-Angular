@@ -54,8 +54,8 @@
                     />
                     <button
                       class="btn btn-primary"
-                      (click)="placeBid()"
-                      [disabled]="bidAmount <= currentBid"
+                      (click)="crateOffer()"
+                      [disabled]="!bidAmount"
                     >
                       Place Bid
                     </button>
@@ -115,6 +115,31 @@
                   <span class="online-dot"></span>
                 </span>
               </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+          <div
+            class="card-header bg-secondary text-white d-flex align-items-center"
+          >
+            <i class="fas fa-users me-2"></i>
+            <h4 class="m-0">Offres: {{ offers.length }}</h4>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li
+              *ngFor="let offre of offers"
+              class="list-group-item d-flex justify-content-between align-items-center"
+       
+            >
+              <div class="d-flex align-items-center">
+                {{ offre.amount }}
+                
+              </div>
+        
             </li>
           </ul>
         </div>

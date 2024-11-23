@@ -11,10 +11,12 @@ import { AuthService } from './auth.service';
 export class WebSocketService {
   private socket: Socket | null = null;
   private activeUsers = new BehaviorSubject<User[]>([]);
+  private offersTab = new BehaviorSubject<any[]>([]);
   private connectionStatus = new BehaviorSubject<boolean>(false);
   private platformId = inject(PLATFORM_ID);
   private reconnectAttempts = 0;
   private readonly MAX_RECONNECT_ATTEMPTS = 5;
+
 
   constructor(
     private ngZone: NgZone,
@@ -122,9 +124,20 @@ export class WebSocketService {
       }
     );
 
+      //Ecouter à partir de service back-end cette évenement (Notifier les autres participants)
+    this.socket.on('offerUpdate', (data: any) => {
+      console.log('OFFER UPDATE', data);
+
+      this.ngZone.run(() => {
+        this.offersTab.next(data.offers);
+      });
+    })
+
     this.socket.on('error', (error) => {
       console.error('WebSocket error:', error);
     });
+
+
   }
 
   joinRoom(auctionId: string, user: User) {
@@ -138,6 +151,26 @@ export class WebSocketService {
     } else {
       this.emitJoinRoom(auctionId, user);
     }
+  }
+
+  //---------offer--------------------
+
+  //Notifier le serveur que un nouvel offre a été crée (émis)
+  public emitNewOffer = (auctionId: number, user: any,  offer: any) => {
+    console.log('Emitting new offer:', auctionId, offer);
+    this.socket?.emit('NewOffer', { auctionId, offer, user }, (response: any) => {
+      if (response?.status === 'success') {
+        console.log('Successfully emitted new offer:', response);
+      }
+    });
+
+    //
+
+  }
+
+  //Liste des offres
+  public getOffers(): Observable<any[]> {
+    return this.offersTab.asObservable();
   }
 
   private emitJoinRoom(auctionId: string, user: User) {
@@ -176,3 +209,4 @@ interface User {
   username: string;
   role: string;
 }
+

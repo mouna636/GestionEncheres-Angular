@@ -22,6 +22,9 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { trigger, transition, style, animate } from '@angular/animations';
 
+import { off } from 'process';
+import { OfferService } from '../../../core/services/offer.service';
+
 interface User {
   username: string;
   role: string;
@@ -53,6 +56,7 @@ interface User {
 })
 export class EnchereRoomComponent {
   activeUsers: any[] = [];
+  offers: any[] = [];
   private subscription?: Subscription;
   user!: any;
   enchere!: Enchere;
@@ -65,11 +69,13 @@ export class EnchereRoomComponent {
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private offerService: OfferService
   ) {}
 
   async ngOnInit() {
     const enchId = this.route.snapshot.params['id'];
+
 
     if (enchId) {
       this.fetchEnchere(enchId);
@@ -78,8 +84,13 @@ export class EnchereRoomComponent {
     }
     this.fetchUserAndCheckPermissions(enchId);
 
+    //fetch offers
+    this.fetchOffers();
+
     if (typeof window !== 'undefined')
       window.addEventListener('beforeunload', this.onWindowUnload.bind(this));
+
+
   }
 
   fetchEnchere(id: string) {
@@ -88,7 +99,7 @@ export class EnchereRoomComponent {
         console.log('Enchere:', enchere);
         this.enchere = enchere;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error fetching enchere:', error);
         this.router.navigate(['/encheres']);
       },
@@ -115,13 +126,13 @@ export class EnchereRoomComponent {
 
                 this.cdr.detectChanges();
               },
-              error: (error) => {
+              error: (error: any) => {
                 console.error('WebSocket error:', error);
               },
             });
         }, 0);
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error fetching current user:', error);
 
         this.currentUserAllowed = false;
@@ -197,14 +208,69 @@ export class EnchereRoomComponent {
     console.log('Checking if user is allowed:', username);
     if (!this.enchere) console.log('Enchere not loaded');
     this.enchereService.checkIfSubscribed(username, enchereId).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         console.log('Subscription check:', response);
         this.currentUserAllowed = response;
         this.loadingPermissions = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error checking subscription:', error);
       },
     });
   }
+
+  //-----------------offer-------------------
+  crateOffer() {
+  
+    this.authService.getCurrentUserObservable().subscribe({
+      next: (user) => {
+        const offer = {
+          amount: this.currentBid,
+          enchereId: this.enchere.id,
+          userName: user.username,
+          
+        };
+        console.log('Offer:', offer);
+
+        this.offerService.createOffer(offer).subscribe({
+          next: (response: any) => {
+            console.log('Offer created:', response);
+            this.toastr.success('Offer created successfully');
+
+            //envoyer l'offre au serveur (back-end) de websocket
+            this.auctionSocketService.emitNewOffer(this.enchere.id, response, user);
+            
+          },
+
+
+          error: (error : any) => {
+            console.error('Error creating offer:', error);
+            this.toastr.error('Error creating offer');
+          },
+
+
+        });
+       
+      },
+      error: (error) => {
+        console.error('Error fetching current user:', error);
+      },
+    });
+    
+  }
+
+  fetchOffers() {
+    this.offerService.getOffers().subscribe({
+      next: (offers: any[]) => {
+        console.log('Offers:', offers);
+        this.offers = offers;
+      },
+      error: (error : any) => {
+        console.error('Error fetching offers:', error);
+      },
+    });
+  }
+
+
+
 }
