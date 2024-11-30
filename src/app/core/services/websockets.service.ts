@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { AuthService } from './auth.service';
+import { Router } from '@angular/router';
 
 interface User {
   username: string;
@@ -39,7 +40,8 @@ export class WebSocketService {
   constructor(
     private ngZone: NgZone,
     private toastr: ToastrService,
-    private authS: AuthService
+    private authS: AuthService,
+    private router: Router
   ) {
     authS.getCurrentUserObservable().subscribe((user) => {
       if (user) {
@@ -125,6 +127,25 @@ export class WebSocketService {
         });
       }
     );
+    this.socket.on('kicked', (data: { message: string }) => {
+      this.ngZone.run(() => {
+        this.toastr.warning(data.message, 'Kicked from Auction');
+        this.disconnect();
+        this.router.navigate(['/']);
+        this.activeUsers.next([]);
+      });
+    });
+
+    this.socket.on(
+      'userKicked',
+      (data: { kickedUser: string; activeUsers: User[]; message: string }) => {
+        this.ngZone.run(() => {
+          console.log('User kicked:', data);
+          this.activeUsers.next(data.activeUsers);
+          this.toastr.info(data.message, 'User Kicked');
+        });
+      }
+    );
 
     this.socket.on('offerUpdate', (data: OfferUpdate) => {
       this.ngZone.run(() => {
@@ -160,6 +181,25 @@ export class WebSocketService {
     } else {
       this.emitJoinRoom(auctionId, user);
     }
+  }
+
+  kickUser(auctionId: string, userToKick: string) {
+    if (!this.socket?.connected) {
+      console.error('Socket not connected');
+      return;
+    }
+
+    this.authS.getCurrentUserObservable().subscribe((admin) => {
+      if (admin && admin.role.name === 'admin') {
+        this.socket?.emit('kickUser', {
+          auctionId,
+          adminUsername: admin.username,
+          userToKick,
+        });
+      } else {
+        this.toastr.error('Only admins can kick users', 'Unauthorized');
+      }
+    });
   }
 
   emitNewOffer(auctionId: string, user: User, amount: number) {

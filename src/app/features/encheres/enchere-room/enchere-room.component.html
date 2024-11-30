@@ -85,6 +85,7 @@
               <div class="d-flex align-items-center">
                 {{ participant.username }}
                 <span
+                  class="ms-3"
                   *ngIf="
                     participant.role.name === 'admin' ||
                     participant.role.name === 'super-admin'
@@ -106,6 +107,22 @@
                   Seller
                 </span>
               </div>
+
+              <div
+                *ngIf="
+                  participant.username !== user.username &&
+                  (user.role.name === 'admin' ||
+                    user.role.name === 'super-admin')
+                "
+              >
+                <button
+                  class="btn btn-outline-danger btn-sm rounded-pill"
+                  (click)="kickUser(participant)"
+                  title="Kick User"
+                >
+                  <i class="bi bi-person-x-fill"></i>
+                </button>
+              </div>
               <div class="d-flex">
                 <span
                   class="badgex rounded-pill position-relative"
@@ -126,7 +143,7 @@
             class="card-header bg-secondary text-white d-flex align-items-center"
           >
             <i class="fas fa-users me-2"></i>
-            <h4 class="m-0">Offres: {{ offers.length }}</h4>
+            <h4 class="m-0">Offres: {{ offers && offers.length }}</h4>
           </div>
           <ul class="list-group list-group-flush">
             <li

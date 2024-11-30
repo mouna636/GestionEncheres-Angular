@@ -216,6 +216,16 @@ export class EnchereRoomComponent {
     });
   }
 
+  kickUser(user: any) {
+    console.log('Kicking user:', user.username);
+    console.log('current user: ', this.user.username);
+
+    // this.auctionSocketService.kickUser(
+    //   this.enchere.id.toString(),
+    //   user.username
+    // );
+  }
+
   //-----------------offer-------------------
   crateOffer() {
     this.authService.getCurrentUserObservable().subscribe({
