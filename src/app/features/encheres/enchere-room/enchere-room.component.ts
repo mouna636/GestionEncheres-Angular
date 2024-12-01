@@ -59,7 +59,7 @@ export class EnchereRoomComponent {
   offers: any[] = [];
   private subscription?: Subscription;
   user!: any;
-  enchere!: Enchere;
+  enchere!: any;
   currentUserAllowed: boolean = false;
   loadingPermissions: boolean = true;
   constructor(

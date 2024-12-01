@@ -1,93 +1,73 @@
-<div class="container-fluid">
-  <h1 class="text-center mb-5 display-4">Auction Marketplace</h1>
-
-  <div class="row">
-    <!-- Sidebar Filters -->
-    <div class="col-md-3">
-      <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">Filters</h5>
+<app-enchere-page>
+  <div class="container-fluid mt-4 enchere-list">
+    <!-- Header Section -->
+    <div class="row mb-4">
+      <div class="col">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="mb-0">Active Auctions</h2>
+          <a type="button" class="btn btn-success" routerLink="create">
+            <i class="bi bi-plus-lg"></i> New Auction
+          </a>
         </div>
-        <div class="card-body">
-          <!-- Status Filter -->
-          <h6 class="card-title">Auction Status</h6>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="statusAll"
-              checked
-            />
-            <label class="form-check-label" for="statusAll"> All Status </label>
-          </div>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="statusActive"
-              checked
-            />
-            <label class="form-check-label" for="statusActive"> Active </label>
-          </div>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="statusUpcoming"
-            />
-            <label class="form-check-label" for="statusUpcoming">
-              Upcoming
-            </label>
+
+        <div
+          class="d-flex flex-wrap gap-3 justify-content-between align-items-center"
+        >
+          <!-- Filters -->
+          <div class="btn-group">
+            <button
+              *ngFor="let filter of filters"
+              class="btn"
+              [class.btn-primary]="currentFilter === filter"
+              [class.btn-outline-primary]="currentFilter !== filter"
+              (click)="filterBids(filter)"
+            >
+              {{ filter | titlecase }}
+              <span class="badge bg-light text-dark ms-2">{{
+                getBidCount(filter)
+              }}</span>
+            </button>
           </div>
 
-          <!-- Category Filter -->
-          <h6 class="card-title mt-3">Category</h6>
-          <select class="form-select">
-            <option selected>All Categories</option>
-            <option>Electronics</option>
-            <option>Art</option>
-            <option>Collectibles</option>
-            <option>Vehicles</option>
-          </select>
-
-          <!-- Price Range -->
-          <h6 class="card-title mt-3">Price Range</h6>
-          <div class="input-group">
-            <span class="input-group-text">$</span>
-            <input type="text" class="form-control" placeholder="Min" />
-            <span class="input-group-text">to</span>
-            <span class="input-group-text">$</span>
-            <input type="text" class="form-control" placeholder="Max" />
+          <!-- Search and View Toggle -->
+          <div class="d-flex gap-2">
+            <div class="input-group search-bar">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Search auctions..."
+                [(ngModel)]="searchTerm"
+                (input)="onSearch()"
+              />
+              <span class="input-group-text">
+                <i class="bi bi-search"></i>
+              </span>
+            </div>
+            <button
+              class="btn btn-outline-secondary view-toggle"
+              (click)="toggleView()"
+            >
+              <i
+                class="bi"
+                [ngClass]="view === 'grid' ? 'bi-list' : 'bi-grid'"
+              ></i>
+            </button>
           </div>
-        </div>
-      </div>
-
-      <!-- Sorting -->
-      <div class="card">
-        <div class="card-header bg-secondary text-white">
-          <h5 class="mb-0">Sort By</h5>
-        </div>
-        <div class="card-body">
-          <select class="form-select">
-            <option selected>Ending Soon</option>
-            <option>Highest Bid</option>
-            <option>Lowest Bid</option>
-            <option>Newest</option>
-          </select>
         </div>
       </div>
     </div>
 
-    <!-- Auction Cards -->
-    <div class="col-md-9">
-      <div class="row g-4">
-        <div class="row g-4">
-          <!-- Active Auction Card -->
-          <div class="col-md-4" *ngFor="let ench of encheres; let i = index">
-            <app-enchere-card [enchere]="ench" />
-          </div>
+    <div class="row g-4">
+      <ng-container
+        *ngIf="filteredEncheres?.length && filteredEncheres.length > 0"
+      >
+        <div
+          *ngFor="let bid of filteredEncheres"
+          class="col-12 col-md-6 col-lg-4 col-xl-3"
+        >
+          <app-enchere-card [bid]="bid"></app-enchere-card>
         </div>
-      </div>
+      </ng-container>
     </div>
   </div>
-</div>
+</app-enchere-page>

@@ -9,23 +9,46 @@ import { ListProductComponent } from './features/products/list-product/list-prod
 import { SideBarComponent } from './shared/components/side-bar/side-bar.component';
 import { TopBarComponent } from './shared/components/top-bar/top-bar.component';
 import { DashboardComponent } from './shared/components/dashboard/dashboard.component';
+import { EnchereDetailComponent } from './features/encheres/enchere-detail/enchere-detail.component';
+import { EnchereFormComponent } from './features/encheres/enchere-form/enchere-form.component';
+import { EnchereListComponent } from './features/encheres/enchere-list/enchere-list.component';
+import { EnchereRoomComponent } from './features/encheres/enchere-room/enchere-room.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'dashboard', component: DashboardComponent },
-  {path: 'side-bar',component:SideBarComponent},
-  {path: 'top-bar',component:TopBarComponent},
+  { path: 'side-bar', component: SideBarComponent },
+  { path: 'top-bar', component: TopBarComponent },
   { path: 'Categoryform', component: FormCategoryComponent },
   { path: 'list-product', component: ListProductComponent },
   { path: 'add-product', component: AddProductComponent },
   { path: 'list-category', component: ListCategoryComponent },
   {
-    path: 'encheres',
-    component: EncherePageComponent,
-    canActivate: [AuthGuard],
-    loadChildren: () =>
-      import('./features/encheres/enchere.routes').then((m) => m.enchereRoutes),
+    path: 'room/enchere/:id',
+    component: EnchereRoomComponent,
+    // canActivate: [AuthGuard],
   },
+  {
+    path: 'encheres',
+    component: EnchereListComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'encheres/create',
+    component: EnchereFormComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'encheres/edit/:id',
+    component: EnchereFormComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'encheres/:id',
+    component: EnchereDetailComponent,
+    canActivate: [AuthGuard],
+  },
+
   {
     path: '',
     loadChildren: () =>
