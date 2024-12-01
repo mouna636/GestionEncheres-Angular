@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { countries } from '../../../core/store/create-country.store';
 import { AuthService } from '../../../core/services/auth.service';
 import { HttpClientModule } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -26,7 +27,7 @@ export class SignupComponent {
     countryid: '',
     tempCountry: {},
   };
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
   onSubmit() {
     if (this.validateForm()) {
       console.log('Form Submitted', this.user);
@@ -34,6 +35,7 @@ export class SignupComponent {
         ...this.user,
         country: this.user.tempCountry.name,
         countryid: this.user.tempCountry.code,
+
       };
 
       delete user.tempCountry;
@@ -42,6 +44,7 @@ export class SignupComponent {
       this.authService.register(user).subscribe({
         next: (res) => {
           console.log('res', res);
+          this.router.navigate(['/signin']); 
         },
         error: (err) => {
           console.log('err', err);
