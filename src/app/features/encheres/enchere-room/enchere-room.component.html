@@ -31,14 +31,14 @@
             <div class="row g-4">
               <div class="col-md-6">
                 <img
-                  [src]="itemImage"
+                  [src]="getImage(enchere.image)"
                   class="img-fluid rounded-3 shadow-sm"
                   alt="Auction Item"
                 />
               </div>
               <div class="col-md-6">
-                <h4 class="mb-3">{{ itemName }}</h4>
-                <p class="text-muted mb-4">{{ itemDescription }}</p>
+                <h4 class="mb-3">{{ enchere.product.name }}</h4>
+                <p class="text-muted mb-4">{{ enchere.product.description }}</p>
                 <div class="bid-section bg-light p-3 rounded-3">
                   <div class="current-bid mb-3">
                     <h5 class="text-primary">

@@ -10,11 +10,20 @@ import { EnchereService } from '../../../core/services/enchere.service';
 import { Enchere } from '../../../core/models/Enchere';
 import { TitleCasePipe, CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { SideBarComponent } from '../../../shared/components/side-bar/side-bar.component';
+import { TopBarComponent } from '../../../shared/components/top-bar/top-bar.component';
 
 @Component({
   selector: 'app-enchere-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, TitleCasePipe],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    TitleCasePipe,
+    SideBarComponent,
+    TopBarComponent,
+  ],
   templateUrl: './enchere-form.component.html',
 })
 export class EnchereFormComponent implements OnInit {

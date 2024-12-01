@@ -26,7 +26,6 @@ export const routes: Routes = [
   {
     path: 'room/enchere/:id',
     component: EnchereRoomComponent,
-    // canActivate: [AuthGuard],
   },
   {
     path: 'encheres',
@@ -34,9 +33,9 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'encheres/create',
+    path: 'add-enchere',
     component: EnchereFormComponent,
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
   },
   {
     path: 'encheres/edit/:id',

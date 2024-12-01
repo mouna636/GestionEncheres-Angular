@@ -102,7 +102,9 @@ export class EnchereRoomComponent {
       },
     });
   }
-
+  getImage(image: string): string {
+    return `http://localhost:3000/uploads/images/encheres/${image}`;
+  }
   fetchUserAndCheckPermissions(enchId: string) {
     this.authService.getCurrentUserObservable().subscribe({
       next: (user) => {

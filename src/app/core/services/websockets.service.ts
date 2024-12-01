@@ -151,6 +151,7 @@ export class WebSocketService {
       this.ngZone.run(() => {
         console.log('Offer update received:', data);
         this.offers.next(data.allOffers);
+
         this.highestBid.next(data.highestBid);
 
         if (data.newOffer.user.username !== user.username) {
