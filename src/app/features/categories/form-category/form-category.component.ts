@@ -36,7 +36,7 @@ export class FormCategoryComponent {
       next: () => {
         console.log('Catégorie ajoutée avec succès');
         console.log(this.categoryForm.value)
-        this.router.navigate(['/']); 
+        this.router.navigate(['/list-category']); 
       },
       error: (err) => {
         console.error('Erreur lors de l\'ajout de la catégorie :', err);

@@ -66,7 +66,7 @@ export class AddProductComponent implements OnInit {
     this.productService.addProductWithImage(formData).subscribe(
       (response) => {
         console.log('Produit ajouté:', response);
-        this.router.navigate(['/']); 
+        this.router.navigate(['/list-product']); 
       },
       (error) => {
         console.error('Erreur lors de l\'ajout du produit:', error);
