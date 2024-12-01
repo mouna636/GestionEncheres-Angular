@@ -29,16 +29,14 @@ export class ListCategoryComponent {
         }
       )
     }
-    deleteCategory(id: string) {
+    deleteCategory(id: number) {
       this.http.delete(`http://localhost:3000/categories/${id}`)
         .subscribe(
           () => {
             console.log("Produit supprimé avec succès");
             this.categories = this.categories.filter(c => c.id !== id);
           },
-          error => {
-            console.error("Erreur lors de la suppression du category", error);
-          }
+         
         );
     }
 
