@@ -1,323 +1,80 @@
-<app-enchere-page>
-  <ng-container *ngIf="(isLoading$ | async) === false">
-    <div *ngIf="error$ | async as error" class="alert alert-danger">
-      {{ error }}
-    </div>
 
-    <ng-container *ngIf="enchere$ | async as enchere">
-      <div class="container mt-5">
-        <div class="card shadow-lg">
-          <div class="row g-0">
-            <!-- Image Column -->
+<div class="container my-5" style="padding-top: 70px">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="row">
             <div class="col-md-6">
-              <div class="bid-image-container h-100">
-                <img
-                  [src]="getImage(enchere?.image || 'default-image.jpg')"
-                  [alt]="enchere.title"
-                  class="img-fluid rounded-start h-100 object-fit-cover"
-                />
-              </div>
+              <img
+                src="https://via.placeholder.com/400x300"
+                alt="Item Image"
+                class="img-fluid rounded"
+              />
             </div>
-
-            <!-- Details Column -->
             <div class="col-md-6">
-              <div class="card-body p-4">
-                <!-- Status and Title Section -->
-                <div
-                  class="d-flex justify-content-between align-items-start mb-3"
-                >
-                  <h2 class="card-title">{{ enchere.title }}</h2>
-                  <div class="d-flex gap-3">
-                    <!-- <button class="badge bg-success btn">Enter Room</button> -->
-                    <ng-container [ngSwitch]="enchere.status">
-                      <button
-                        *ngSwitchCase="StatusEnum.UPCOMING"
-                        class="badge bg-success btn"
-                        #subscribeButton
-                        (click)="onSubscribe()"
-                      >
-                        <i class="bi bi-bell me-2"></i>
-                        Subscribe
-                      </button>
-
-                      <button
-                        *ngSwitchCase="StatusEnum.RUNNING"
-                        [disabled]="!isSubscribed$.value"
-                        class="badge bg-success btn"
-                        [ngClass]="{ 'btn-warning': !isSubscribed$.value }"
-                        (click)="enterAuctionRoom()"
-                      >
-                        {{
-                          isSubscribed$.value ? "Enter the room" : "Started..."
-                        }}
-                      </button>
-
-                      <button
-                        *ngSwitchDefault
-                        class="badge bg-success btn"
-                        disabled
-                      >
-                        {{ enchere.status | titlecase }}
-                      </button>
-                    </ng-container>
-
-                    <span
-                      class="badge"
-                      [ngClass]="getStatusClass(enchere.status)"
-                    >
-                      {{ enchere.status | titlecase }}
-                    </span>
-                  </div>
-                </div>
-
-                <!-- Product Quick Info -->
-                <div class="product-quick-info mb-4">
-                  <h6 class="text-muted">
-                    {{ enchere.product.name }}
-                  </h6>
-                  <div class="d-flex gap-3">
-                    <span class="badge bg-secondary">{{
-                      product.condition
-                    }}</span>
-                    <span class="badge bg-info">{{ product.year }}</span>
-                  </div>
-                </div>
-
-                <!-- Timer and Price Section -->
-                <div class="timer-section mb-4">
-                  <h5 class="text-muted">
-                    {{
-                      enchere.status === StatusEnum.UPCOMING
-                        ? "Starts In"
-                        : "Time Remaining"
-                    }}
-                  </h5>
-                  <div
-                    class="countdown-timer h4 mb-3 d-flex align-items-center justify-content-between"
-                  >
-                    <span>{{ getTimeLeft() }}</span>
-                    <button
-                      class="btn btn-sm btn-outline-success ms-3 d-flex align-items-center ml-auto"
-                      (click)="getTimeLeft()"
-                    >
-                      <i class="bi bi-arrow-clockwise"></i>
-                    </button>
-                  </div>
-                </div>
-
-                <div class="bid-info mb-4" *ngIf="enchere.status === 'running'">
-                  <div class="row g-3">
-                    <div class="col-6">
-                      <div class="price-card">
-                        <label class="text-muted">Current Price</label>
-                        <h4 class="text-primary mb-0">
-                          ${{ enchere.currentHighestPrice | number : "1.2-2" }}
-                        </h4>
-                      </div>
-                    </div>
-                    <div class="col-6">
-                      <div class="bids-card">
-                        <label class="text-muted">Total Bids</label>
-                        <h4 class="mb-0">
-                          {{
-                            enchere.status === StatusEnum.RUNNING
-                              ? enchere.totalBids
-                              : "---"
-                          }}
-                        </h4>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Tabs Navigation -->
-                <ul class="nav nav-tabs mb-3">
-                  <li class="nav-item">
-                    <a
-                      class="nav-link"
-                      [class.active]="activeTab === 'details'"
-                      (click)="setActiveTab('details')"
-                      href="javascript:void(0)"
-                    >
-                      Product Details
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a
-                      class="nav-link"
-                      [class.active]="activeTab === 'shipping'"
-                      (click)="setActiveTab('shipping')"
-                      href="javascript:void(0)"
-                    >
-                      Shipping
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a
-                      class="nav-link"
-                      [class.active]="activeTab === 'seller'"
-                      (click)="setActiveTab('seller')"
-                      href="javascript:void(0)"
-                    >
-                      Seller
-                    </a>
-                  </li>
-                </ul>
-
-                <!-- Tab Content -->
-                <div class="tab-content mb-4">
-                  <!-- Product Details Tab -->
-                  <div
-                    class="tab-pane fade"
-                    [class.show]="activeTab === 'details'"
-                    [class.active]="activeTab === 'details'"
-                  >
-                    <div class="specifications mb-3">
-                      <h6 class="mb-2">Specifications</h6>
-                      <div class="table-responsive">
-                        <table class="table table-sm">
-                          <tbody>
-                            <tr
-                              *ngFor="
-                                let spec of product.specifications | keyvalue
-                              "
-                            >
-                              <td class="text-muted">{{ spec.key }}</td>
-                              <td>{{ spec.value }}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-
-                    <div class="features">
-                      <h6 class="mb-2">Features</h6>
-                      <ul class="list-unstyled">
-                        <li
-                          *ngFor="let feature of product.features"
-                          class="mb-1"
-                        >
-                          <i class="bi bi-check2 text-success me-2"></i>
-                          {{ feature }}
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <!-- Shipping Tab -->
-                  <div
-                    class="tab-pane fade"
-                    [class.show]="activeTab === 'shipping'"
-                    [class.active]="activeTab === 'shipping'"
-                  >
-                    <div class="location mb-3">
-                      <h6 class="mb-2">Item Location</h6>
-                      <p>
-                        <i class="bi bi-geo-alt me-2"></i>{{ product.location }}
-                      </p>
-                    </div>
-
-                    <div class="shipping-options">
-                      <h6 class="mb-2">Shipping Options</h6>
-                      <div
-                        class="card mb-2"
-                        *ngFor="let option of product.shippingOptions"
-                      >
-                        <div class="card-body">
-                          <div
-                            class="d-flex justify-content-between align-items-center"
-                          >
-                            <div>
-                              <h6 class="mb-1">{{ option.method }}</h6>
-                              <small class="text-muted">{{
-                                option.estimatedDays
-                              }}</small>
-                            </div>
-                            <span class="shipping-cost"
-                              >${{ option.cost }}</span
-                            >
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Seller Tab -->
-                  <div
-                    class="tab-pane fade"
-                    [class.show]="activeTab === 'seller'"
-                    [class.active]="activeTab === 'seller'"
-                  >
-                    <div class="seller-profile">
-                      <div class="d-flex align-items-center mb-3">
-                        <div class="seller-avatar me-3">
-                          <img
-                            src=""
-                            alt="Seller"
-                            class="rounded-circle"
-                            width="60"
-                          />
-                        </div>
-                        <div>
-                          <h5 class="mb-1">{{ enchere.seller.username }}</h5>
-                          <div class="d-flex align-items-center gap-2">
-                            <div class="rating">
-                              <div class="stars">
-                                <i
-                                  class="bi bi-star-fill text-warning"
-                                  *ngFor="
-                                    let star of [].constructor(5);
-                                    let i = index
-                                  "
-                                  [class.active]="
-                                    i < (enchere?.seller?.rating || 0)
-                                  "
-                                ></i>
-                                <!-- <i class="bi bi-star-fill text-warning"></i> -->
-                                <span class="ms-1">{{
-                                  enchere.seller.rating
-                                }}</span>
-                              </div>
-                            </div>
-                            <span class="text-muted">·</span>
-                            <span class="text-muted"
-                              >Member since
-                              {{
-                                enchere.seller.createdAt | date : "MMM yyyy"
-                              }}</span
-                            >
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="seller-stats row g-2">
-                        <div class="col-4">
-                          <div class="stat-card text-center p-2">
-                            <h6 class="mb-1">98%</h6>
-                            <small class="text-muted">Positive Feedback</small>
-                          </div>
-                        </div>
-                        <div class="col-4">
-                          <div class="stat-card text-center p-2">
-                            <h6 class="mb-1">534</h6>
-                            <small class="text-muted">Items Sold</small>
-                          </div>
-                        </div>
-                        <div class="col-4">
-                          <div class="stat-card text-center p-2">
-                            <h6 class="mb-1">2.1k</h6>
-                            <small class="text-muted">Followers</small>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <h2>Vintage Watch Collection</h2>
+              <p class="text-muted">Item #12345</p>
+              <div class="mb-3">
+                <span class="badge bg-success">Active</span>
+                <span class="timer ms-2">
+                  <i class="far fa-clock"></i> 02:45:30
+                </span>
+              </div>
+              <p class="current-price mb-2">Current Bid: $1,250</p>
+              <div class="input-group mb-3">
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Enter bid amount"
+                  min="1250"
+                />
+                <button class="btn btn-primary" type="button">Place Bid</button>
               </div>
             </div>
           </div>
+
+          <div class="mt-4">
+            <h4>Description</h4>
+            <p>
+              This is a description of the vintage watch collection being
+              auctioned. It includes details about the watch, its history, and
+              the auction details.
+            </p>
+          </div>
         </div>
       </div>
-    </ng-container>
-  </ng-container>
-</app-enchere-page>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Bid History</h5>
+        </div>
+        <div class="card-body bid-history">
+          <div class="bid-entry mb-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="bid-amount">$1,200</span>
+              <small class="text-muted">04/25/2023, 3:45 PM</small>
+            </div>
+            <hr class="my-2" />
+          </div>
+          <div class="bid-entry mb-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="bid-amount">$1,150</span>
+              <small class="text-muted">04/24/2023, 9:30 AM</small>
+            </div>
+            <hr class="my-2" />
+          </div>
+          <div class="bid-entry mb-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="bid-amount">$1,100</span>
+              <small class="text-muted">04/23/2023, 5:15 PM</small>
+            </div>
+            <hr class="my-2" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

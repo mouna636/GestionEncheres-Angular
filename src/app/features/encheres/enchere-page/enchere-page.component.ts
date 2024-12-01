@@ -5,8 +5,9 @@ import { RouterOutlet } from '@angular/router';
 @Component({
   selector: 'app-enchere-page',
   standalone: true,
-  imports: [],
+  imports: [NavbarComponent, RouterOutlet],
   templateUrl: './enchere-page.component.html',
   styleUrl: './enchere-page.component.scss',
+  encapsulation: ViewEncapsulation.None,
 })
 export class EncherePageComponent {}

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {
   HttpEvent,
-  HttpInterceptor,
   HttpHandler,
+  HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -13,11 +13,14 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    console.log('AuthInterceptor - intercepting request:', req.url);
-    const authReq = req.clone({
-      withCredentials: true, // Ensure cookies are sent with the request
+    // Check if the request is for the login endpoint
+    // if (req.url.includes('/signin')) {
+    //   return next.handle(req);
+    // }
+
+    const clonedRequest = req.clone({
+      withCredentials: true, // Include HttpOnly cookies in the request
     });
-    console.log('AuthInterceptor - cloned request:', authReq);
-    return next.handle(authReq);
+    return next.handle(clonedRequest);
   }
 }
